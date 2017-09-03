@@ -9,9 +9,16 @@
     <script type="text/javascript" src="{% static '/js/jq.js' %}"></script>
 </head>
     <body>
-
+    <script>
+        var m21 = "";
+    </script>
     <center>
-    <h3> This is : {{ test3 }}</h3>
+        <div class="canvasDiv">
+        {% if test %}
+            <h3> This is : {{ test3 }}</h3>
+            <!-- <h3> This is : {{ test }}</h3> -->
+            <img src="{{test}}" width="300" height="300" style="background-color: #ffffff; " hidden="true"/>
+        {% endif %}
         <div id="canvasDiv">
         </div>
     <form action="{% url 'canvas' %}" method="post">
@@ -21,7 +28,9 @@
     </form>
      <input type="button" onclick="hi()" value="Test"/>
      <input type="button" onclick="clearCanvas()" value="Clear"/>
+        <input type="button" onclick="redo()" value="Back" />
 
+        </div>
     </center>
     </body>
     <script type="text/javascript">
@@ -35,15 +44,33 @@
         canvas.setAttribute("name", "myCanvas");
         canvas.setAttribute("style", "background-color: #ffffff")
         canvasDiv.appendChild(canvas);
+        //var ct = $("#myCanvas").getContext("2d");
+        var im = new Image();
+
+        /*
+        im.src = {{ test }};
+            ct.drawImage(im, 0,9,canvasWidth, canvasHeight);
+        */
+        var testExixts = {% if test %}true {% else %}false {% endif %}
+        var m21 = {% if test %}"{{ test }}"{% else %} "" {% endif %};
+
+        //var m21 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAFDUlEQVR4nO3dMaiWdRjG4XtwCPdoDdpcgoYKGxyEJKLR4qwSjaWTS9jSEocWaThBUxBtujVEQzSJQ1GSWViiKAZlEFppp7LBovB9Hhuf89J1wTed5TfdvP+P7/+eBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJi3keTLJK8n2TXcAtC6lOT2XZ+XRosAChtZjtXfn7cGuwAW7jVYt5N8OFYGUKiOhP/+nJ9LA1h6Jcl2+tH6OcnesTqAwvn0o3Uzyf65NIClD9OP1q0kD06FAVTeSj9a1wa7AEovpR+ti4NdAKXn04/WmcEugNKx9KP10WAXQGkr/WidHOwCKJ1MP1pbg10ApY/Sj9axwS6A0pn0o3VosAugdDH1YP2R5LHBLoDStdSjdWMyCqDyYO5c1alG69xcFkDtQPrvs94b7AIoHUk/WpuDXQClt9OP1sHBLoDSqfQv/7t/sAugdDn1aF2ejAKo3J87T1TVaJ0a7AIoHUz/fdbbg10Apc30o3VksAug9F766zsPD3YBlM6lHq1vJ6MAOjfiHVrASuxPPVi/J9kz2AVQ6l6x/M1kFEDnmzgaAiuxJ3eOgY6GwCo4GgKr4mgIrIajIbAqjobAqjgaAqvRHQ1vJ3l0sAug1B0NvfAP2JG+TT1aL09GAVSeSD1YP01GAXTeTT1a709GAXR+SD1aByajACqH4gt4YEVOpx6t45NRAJXdSbazHKztv/4GsKMcT/2UdXoyCqDT/QfpQ5NRAJUDqQfrh8kogM77qUfr3ckogM5PqUfrockogMrLqQfr68kogE73Bfwzk1EAlWdSD9aFySiAzgepR+vFySiAyq7Uv4D/fjIKoPNO6qeszckogE71Mwcv+gN2pM3UT1nvTEYBdL5P/TaHXZNRAJUXUz9lfTAZBdC5kHq0HpuMAqh0PyZ1ZQfYkbp/de/KDrDjPB5XdoAVcWUHWA1XdoBVcWUHWBVXdoDVcGUHWBVXdoDVcGUHWJXuys4jk1EAle7KztnJKIBO9ZT1R5Ldk1EAlX2pn7JOTEYBdM5mOVi3RosAGs+mfsp6YzIKoHMly8H6cbQIoHE09VPW0ckogM6PWQ7WldEigMYbqZ+ynp2MAujcynKwzo0WATROxHUdYCV2584v3e8erM8mowA6X6V+9QzAjvNk6mPh4ckogM538RYHYCW2Ur/F4b7JKIDKfam/fN+ajALoVG9xuDZaBNA4nPrL932TUQCdX7McrE9GiwAaX2Q5WNdHiwAaB1MfCx+YjALobGc5WK+NFgE0Ps9ysD4fLQJovBZ3C4GVeCD191jPTUYBdK5nOVhfjhYBND7OcrB+Gy0CaOxNfSx8dTIKoHM1y8G6OloE0Hg19VPW3skogM5vWQ7Wp6NFAI3qbuEvo0UAjadTHwufmowC6NzMcrDeHC0CaFzLcrDOjBYBNDayHKwXRosA7uFK/hmrS8MtAP9p468PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/zN/As5FwJ6b2WtkAAAAAElFTkSuQmCC";
+
+
         if(typeof G_vmlCanvasManager != 'undefined'){
             canvas = G_vmlCanvasManager.initElement(canvas);
         }
         var context = canvas.getContext("2d");
 
+
+        var mouseClick = 0;
         var clickX = new Array();
         var clickY = new Array();
         var clickDrag = new Array();
         var paint;
+        var pencilSize = 5;
+
+
         function addClick(x, y, dragging){
             clickX.push(x);
             clickY.push(y);
@@ -55,7 +82,7 @@
             //context.strokeStyle = "#df4b25";
             context.strokeStyle = "#000000";
             context.lineJoin = "round";
-            context.lineWidth = 5;
+            context.lineWidth = pencilSize;
             for(var i=0;i<clickX.length; i++){
                 context.beginPath();
                 if(clickDrag[i] && i){
@@ -70,12 +97,14 @@
 
             $("#hiddenInput").val($("#myCanvas")[0].toDataURL())
             //console.log($("#hiddenInput").val().length)
+            //console.log("ClickX: " + clickX.length);
         }
         $("#myCanvas").mousedown(function(e){
             var mouseX = e.pageX - this.offsetLeft;
             var mouseY = e.pageY - this.offsetTop;
             paint = true;
             addClick(e.pageX - this.offsetLeft , e.pageY - this.offsetTop, false);
+            mouseClick = [clickX.length, clickY.length, clickDrag.length];
             redraw();
         });
 
@@ -87,18 +116,28 @@
         });
         $("#myCanvas").mouseup(function(e){
             paint = false;
+            //mouseClick = [clickX.length - mouseClick[0], clickY.length- mouseClick[1], clickDrag.length- mouseClick[2]];
         });
 
 
 
         function hi(){
-            var myData = $("#myCanvas")[0].toDataURL();
+
+
+                var im = new Image();
+                im.src = m21;
+                context.drawImage(im, 0, 0, canvasWidth, canvasHeight);
+
+            /*
+            var myData = $("#myCanvas")[0];
             var canv = $("#myCanvas");
             $("#hiddenInput").val("")
             $("#hiddenInput").val($("#myCanvas")[0].toDataURL())
 
             window.open(canv.toDataURL('image/png'));
             console.log(myData);
+            */
+
             //console.log("HELLO");
 
         }
@@ -111,7 +150,41 @@
 
         }
 
+        function redo(){
+            if(mouseClick[0] != 0) {
+                clickX.length = mouseClick[0] - 1;
+                clickY.length = mouseClick[1] - 1;
+                clickDrag.length = mouseClick[2] - 1;
+                redraw();
+            }
+        }
+
+        /*
+        function testExecute(tt) {
+            if (tt) {
+                //alert(m21);
+                console.log(context);
+                var im = new Image();
+                im.src = m21;
+                context.drawImage(im, 0, 0, canvasWidth, canvasHeight);
+            }
+        }
+
+        testExecute(true);
+        */
+        redraw();
+        // so that it doesn't give null error on post request , dataurl 
     </script>
 
+
+    {% if test %}
+    <script>
+        var m21 = "{{ test }}";
+        var im = new Image();
+        im.src = m21;
+        context.drawImage(im, 0, 0, canvasWidth, canvasHeight);
+    </script>
+
+    {% endif %}
 
 </html>

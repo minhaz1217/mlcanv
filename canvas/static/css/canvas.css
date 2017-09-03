@@ -1,3 +1,10 @@
 body{
-    background-color: #673AB7;
+    background-color: #4caf50;
+}
+
+.canvasDiv{
+    background-color: #f44336;
+    margin: 0 20%;
+    padding-bottom:5%;
+    border:1px solid black;
 }
